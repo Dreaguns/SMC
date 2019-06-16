@@ -1,0 +1,99 @@
+
+
+import wixData from 'wix-data';
+
+//Global Variables
+var privateLastCreatedDate, memberCardLastCreatedDate;
+
+/*
+ * Get data from the PrivateMembersData
+ * For Each member listed, fill the Database: MemberCard
+ * Check if the member is already in the Database: MemberCard; and only add the new ones
+ * Tommy's Method: 
+ *  Sort Databases by descending _createdDate order
+ *  Add all _createdDate entries in "Members/PrivateMembersData" that exis
+ */
+wixData.query("Members/PrivateMembersData")
+    .descending("_createdDate")
+    .find()
+    .then( (results) => {
+		let numResults = results.items.length;
+        if (numResults > 0) {
+            console.log("Entries found:" + numResults);
+			//Do Something...Example: Print the latest _createdDate
+            let item = results.items[0];
+            privateLastCreatedDate = item._createdDate;
+            console.log(privateLastCreatedDate);
+            
+        } else 
+            console.log("Results are not found");
+    })
+    .catch( (err) => {
+        let errorMsg = err;
+    });
+
+
+/*
+ * Print the lastest _createdDate from MemberCard Database
+ */   
+wixData.query("MemberCard")
+    .descending("_createdDate")
+    .find()
+    .then( (results) => {
+		let numResults2 = results.items.length;
+        if (numResults2 > 0) {
+            console.log("Entries found:" + numResults2);
+			//Do Something...Example: Print the latest _createdDate
+            let item2 = results.items[0];
+            memberCardLastCreatedDate = item2._createdDate;
+            console.log(memberCardLastCreatedDate);
+            
+        } else 
+            console.log("Results are not found");
+    })
+    .catch( (err) => {
+        let errorMsg = err;
+    }); 
+
+
+    //Compare _createdDate from both Databases and return the Database with the newest date
+    if(privateLastCreatedDate > memberCardLastCreatedDate)
+        console.log("PrivateMemberData has a new LastCreatedDate Entry.");
+        else 
+        console.log("MemberCard has a new LastCreatedDate Entry.");
+
+/* Each person that signs up gets an automatic Loyalty Value of 50
+wixData.query("MemberCard")
+    .lt("loyaltyPoints", 50)
+    .find()
+    .then((results) => {
+        if (results.items.length > 0) {
+            var i;
+            for (i = 0; i < results.items.length; i++) {
+                let item = results.items[i];
+                item.loyaltyPoints = 50;
+                wixData.update("MemberCard", item);
+            }
+        } else {
+            console.log("No results");
+        }
+    })
+    .catch((err) => {
+        let errorMsg = err;
+        console.log(err);
+    });
+
+    */
+
+
+
+
+
+  
+  
+  
+
+
+  
+  
+  
